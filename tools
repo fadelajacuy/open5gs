@@ -1,0 +1,128 @@
+# open5gs-amfd   
+Penjelasan tentang open5gs-amfd
+open5gs-amfd adalah salah satu komponen dari Open5GS, yaitu implementasi open-source dari jaringan inti (core network) 4G LTE dan 5G. AMF (Access and Mobility Management Function) adalah elemen inti dalam jaringan 5G yang bertanggung jawab untuk menangani sesi akses pengguna dan mobilitasnya.
+
+Dalam Open5GS, open5gs-amfd adalah demon (daemon) atau layanan yang menjalankan fungsi AMF dalam jaringan inti 5G. Ini memungkinkan perangkat pengguna (UE - User Equipment) untuk terhubung ke jaringan dan berpindah antar gNB (gNodeB, stasiun pemancar 5G) tanpa kehilangan koneksi.
+
+Fungsi utama dari open5gs-amfd
+1. Manajemen Registrasi UE
+Menangani proses attach dan detach UE (perangkat pengguna).
+Mengelola context UE yang mencakup informasi tentang sesi yang sedang aktif, identitas pengguna (IMSI, GUTI), dan status autentikasi.
+Menjalankan NAS (Non-Access Stratum) signaling antara UE dan jaringan inti.
+2. Autentikasi dan Keamanan
+Berkomunikasi dengan AUSF (Authentication Server Function) untuk melakukan autentikasi pengguna.
+Memastikan bahwa hanya perangkat yang sah yang dapat mengakses jaringan.
+Mengelola kunci enkripsi dan integritas untuk komunikasi aman antara UE dan jaringan inti.
+3. Manajemen Mobilitas
+Mengontrol proses handover antar gNB dalam jaringan.
+Memastikan kelangsungan sesi komunikasi saat UE berpindah dari satu area cakupan ke area lain.
+4. Manajemen Koneksi dan Sesi
+Bertanggung jawab atas pembentukan dan pemeliharaan koneksi UE.
+Menangani Paging untuk menemukan UE saat ada panggilan masuk atau data yang perlu dikirim ke UE.
+5. Interaksi dengan Komponen Jaringan Lainnya
+Berkomunikasi dengan komponen lain di dalam Open5GS seperti:
+SMF (Session Management Function) → Untuk menangani sesi data.
+UPF (User Plane Function) → Untuk menangani lalu lintas data pengguna.
+PCF (Policy Control Function) → Untuk mengatur kebijakan jaringan.
+NSSF (Network Slice Selection Function) → Untuk pemilihan Network Slice berdasarkan kebutuhan UE.
+
+Contoh Implementasi open5gs-amfd
+1. Instalasi dan Konfigurasi open5gs-amfd
+Untuk menjalankan open5gs-amfd, pertama-tama Open5GS harus diinstal pada server Linux. Berikut adalah langkah-langkahnya:
+
+bash
+Copy
+Edit
+# Install dependensi
+sudo apt update
+sudo apt install open5gs -y
+
+# Jalankan AMF daemon
+sudo systemctl start open5gs-amfd
+sudo systemctl enable open5gs-amfd
+
+# Periksa status AMF
+sudo systemctl status open5gs-amfd
+
+2. Konfigurasi open5gs-amfd
+File konfigurasi utama untuk AMF berada di /etc/open5gs/amf.yaml. Contoh bagian dari file ini:
+
+yaml
+Copy
+Edit
+amf:
+  sbi:
+    - addr: 127.0.0.5
+      port: 7777
+  ngap:
+    - addr: 127.0.0.5
+  guami:
+    - plmn_id:
+        mcc: 001
+        mnc: 01
+      amf_id:
+        region: 2
+        set: 1
+  tai:
+    - plmn_id:
+        mcc: 001
+        mnc: 01
+      tac: 1
+Penjelasan konfigurasi:
+
+SBI (Service-Based Interface) → Digunakan untuk komunikasi antar fungsi jaringan dalam inti 5G.
+NGAP (NG Application Protocol) → Digunakan untuk komunikasi antara AMF dan gNB.
+GUAMI (Globally Unique AMF Identifier) → Digunakan untuk mengidentifikasi AMF secara unik di jaringan.
+TAI (Tracking Area Identifier) → Menentukan area cakupan yang digunakan oleh AMF.
+
+3. Contoh Komunikasi UE dengan AMF
+Ketika UE mencoba untuk terhubung ke jaringan, langkah-langkah berikut terjadi:
+
+UE mengirim pesan "Registration Request" ke AMF.
+AMF meneruskan permintaan ke AUSF untuk autentikasi pengguna.
+Jika autentikasi berhasil, AMF mengalokasikan GUTI (Globally Unique Temporary Identifier) untuk UE.
+AMF menghubungi SMF untuk membuat sesi data bagi UE.
+Setelah semua langkah berhasil, AMF mengirim "Registration Accept" ke UE.
+Berikut adalah contoh log dari AMF yang menunjukkan proses ini:
+
+yaml
+Copy
+Edit
+05/02 10:00:12.345: [amf] INFO: [UE IMSI: 001010000000001] Registration Request received
+05/02 10:00:12.456: [amf] INFO: [UE IMSI: 001010000000001] Authentication successful
+05/02 10:00:12.567: [amf] INFO: [UE IMSI: 001010000000001] Assigned GUTI: 001011000000001
+05/02 10:00:12.678: [amf] INFO: [UE IMSI: 001010000000001] Registration Accept sent
+
+Kesimpulan
+open5gs-amfd adalah komponen penting dalam Open5GS yang menjalankan fungsi AMF dalam jaringan inti 5G.
+Fungsi utamanya meliputi registrasi UE, autentikasi, manajemen mobilitas, manajemen koneksi, dan interaksi dengan komponen jaringan lain.
+Dapat diimplementasikan dalam server Linux dengan konfigurasi yang fleksibel.
+Memastikan keamanan dan efisiensi dalam pengelolaan perangkat pengguna di jaringan 5G.
+
+################################################################################################################
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+open5gs-mmed   open5gs-pcrfd  open5gs-sgwud  open5gs-upfd
+open5gs-ausfd  open5gs-nrfd   open5gs-scpd   open5gs-smfd   
+open5gs-bsfd   open5gs-nssfd  open5gs-seppd  open5gs-udmd   
+open5gs-hssd   open5gs-pcfd   open5gs-sgwcd  open5gs-udrd
