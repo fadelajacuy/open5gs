@@ -28,11 +28,35 @@ ________________________________________________________________________________
 ## Langkah 3: Instal MongoDB
 Open5GS menggunakan MongoDB sebagai database untuk menyimpan data pelanggan dan informasi jaringan. Instal MongoDB dengan perintah berikut:
 
-bash
-Copy
-sudo apt install -y mongodb wget git
-sudo systemctl start mongodb
-sudo systemctl enable mongodb
+# Install MongoDB Tools on Ubuntu 22.04
+
+## 1. Install Curl and GNUPG
+```sh
+sudo apt-get install gnupg curl
+```
+
+## 2. Download MongoDB's GPG keys
+```sh
+curl -fsSL https://pgp.mongodb.com/server-7.0.asc | \
+   sudo gpg -o /usr/share/keyrings/mongodb-server-7.0.gpg \
+   --dearmor
+```
+
+## 3. Add new source list for MongoDB
+```sh
+echo "deb [ arch=amd64,arm64 signed-by=/usr/share/keyrings/mongodb-server-7.0.gpg ] https://repo.mongodb.org/apt/ubuntu jammy/mongodb-org/7.0 multiverse" \
+  | sudo tee /etc/apt/sources.list.d/mongodb-org-7.0.list
+```
+
+## 4. Update package db
+```sh
+sudo apt-get update
+```
+
+## 5. Install the tools
+```sh
+sudo apt install mongodb-org-tools
+```
 ______________________________________________________________________________________________________________
 ##Langkah 4: Unduh dan Konfigurasi Open5GS
 Unduh Open5GS:
