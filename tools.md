@@ -6,22 +6,26 @@ open5gs-amfd adalah salah satu komponen dari Open5GS, yaitu implementasi open-so
 
 Dalam Open5GS, open5gs-amfd adalah demon (daemon) atau layanan yang menjalankan fungsi AMF dalam jaringan inti 5G. Ini memungkinkan perangkat pengguna (UE - User Equipment) untuk terhubung ke jaringan dan berpindah antar gNB (gNodeB, stasiun pemancar 5G) tanpa kehilangan koneksi.
 
-Fungsi utama dari open5gs-amfd
-1. Manajemen Registrasi UE
+## Fungsi utama dari open5gs-amfd
+1. ### **Manajemen Registrasi UE**
 Menangani proses attach dan detach UE (perangkat pengguna).
 Mengelola context UE yang mencakup informasi tentang sesi yang sedang aktif, identitas pengguna (IMSI, GUTI), dan status autentikasi.
 Menjalankan NAS (Non-Access Stratum) signaling antara UE dan jaringan inti.
-2. Autentikasi dan Keamanan
+
+2. ### **Autentikasi dan Keamanan**
 Berkomunikasi dengan AUSF (Authentication Server Function) untuk melakukan autentikasi pengguna.
 Memastikan bahwa hanya perangkat yang sah yang dapat mengakses jaringan.
 Mengelola kunci enkripsi dan integritas untuk komunikasi aman antara UE dan jaringan inti.
-3. Manajemen Mobilitas
+
+3. ### **Manajemen Mobilitas**
 Mengontrol proses handover antar gNB dalam jaringan.
 Memastikan kelangsungan sesi komunikasi saat UE berpindah dari satu area cakupan ke area lain.
-4. Manajemen Koneksi dan Sesi
+
+4. #### **Manajemen Koneksi dan Sesi**
 Bertanggung jawab atas pembentukan dan pemeliharaan koneksi UE.
 Menangani Paging untuk menemukan UE saat ada panggilan masuk atau data yang perlu dikirim ke UE.
-5. Interaksi dengan Komponen Jaringan Lainnya
+
+5. ### **Interaksi dengan Komponen Jaringan Lainnya**
 Berkomunikasi dengan komponen lain di dalam Open5GS seperti:
 SMF (Session Management Function) → Untuk menangani sesi data.
 UPF (User Plane Function) → Untuk menangani lalu lintas data pengguna.
@@ -29,26 +33,28 @@ PCF (Policy Control Function) → Untuk mengatur kebijakan jaringan.
 NSSF (Network Slice Selection Function) → Untuk pemilihan Network Slice berdasarkan kebutuhan UE.
 
 Contoh Implementasi open5gs-amfd
-1. Instalasi dan Konfigurasi open5gs-amfd
+1. ### Instalasi dan Konfigurasi open5gs-amfd
 Untuk menjalankan open5gs-amfd, pertama-tama Open5GS harus diinstal pada server Linux. Berikut adalah langkah-langkahnya:
 
 bash
 Copy
 Edit
-# Install dependensi
+## Install dependensi
+```
 sudo apt update
 sudo apt install open5gs -y
-
-# Jalankan AMF daemon
+```
+## Jalankan AMF daemon
+```
 sudo systemctl start open5gs-amfd
 sudo systemctl enable open5gs-amfd
-
-# Periksa status AMF
+```
+## Periksa status AMF
 sudo systemctl status open5gs-amfd
 
-2. Konfigurasi open5gs-amfd
+2. ### Konfigurasi open5gs-amfd
 File konfigurasi utama untuk AMF berada di /etc/open5gs/amf.yaml. Contoh bagian dari file ini:
-
+```
 yaml
 Copy
 Edit
@@ -70,6 +76,7 @@ amf:
         mcc: 001
         mnc: 01
       tac: 1
+```
 Penjelasan konfigurasi:
 
 SBI (Service-Based Interface) → Digunakan untuk komunikasi antar fungsi jaringan dalam inti 5G.
@@ -77,7 +84,7 @@ NGAP (NG Application Protocol) → Digunakan untuk komunikasi antara AMF dan gNB
 GUAMI (Globally Unique AMF Identifier) → Digunakan untuk mengidentifikasi AMF secara unik di jaringan.
 TAI (Tracking Area Identifier) → Menentukan area cakupan yang digunakan oleh AMF.
 
-3. Contoh Komunikasi UE dengan AMF
+3. ### Contoh Komunikasi UE dengan AMF
 Ketika UE mencoba untuk terhubung ke jaringan, langkah-langkah berikut terjadi:
 
 UE mengirim pesan "Registration Request" ke AMF.
@@ -87,6 +94,7 @@ AMF menghubungi SMF untuk membuat sesi data bagi UE.
 Setelah semua langkah berhasil, AMF mengirim "Registration Accept" ke UE.
 Berikut adalah contoh log dari AMF yang menunjukkan proses ini:
 
+```
 yaml
 Copy
 Edit
@@ -94,8 +102,8 @@ Edit
 05/02 10:00:12.456: [amf] INFO: [UE IMSI: 001010000000001] Authentication successful
 05/02 10:00:12.567: [amf] INFO: [UE IMSI: 001010000000001] Assigned GUTI: 001011000000001
 05/02 10:00:12.678: [amf] INFO: [UE IMSI: 001010000000001] Registration Accept sent
-
-Kesimpulan
+```
+# Kesimpulan
 open5gs-amfd adalah komponen penting dalam Open5GS yang menjalankan fungsi AMF dalam jaringan inti 5G.
 Fungsi utamanya meliputi registrasi UE, autentikasi, manajemen mobilitas, manajemen koneksi, dan interaksi dengan komponen jaringan lain.
 Dapat diimplementasikan dalam server Linux dengan konfigurasi yang fleksibel.
@@ -110,45 +118,47 @@ open5gs-mmed adalah komponen dalam Open5GS yang menjalankan fungsi MME (Mobility
 Dalam Open5GS, open5gs-mmed adalah daemon (layanan) yang mengelola komunikasi antara eNB (Evolved Node B) dan core network, menangani autentikasi UE, manajemen sesi, dan mobilitas pengguna.
 
 Fungsi utama dari open5gs-mmed
-1. Manajemen Registrasi UE
+1. ### Manajemen Registrasi UE
 Menangani proses attach dan detach UE ke jaringan.
 Mengelola konteks UE termasuk IMSI, status autentikasi, dan informasi sesi.
 Menggunakan NAS (Non-Access Stratum) signaling untuk komunikasi dengan UE.
-2. Autentikasi dan Keamanan
+2. ### Autentikasi dan Keamanan
 Berkomunikasi dengan HSS (Home Subscriber Server) untuk autentikasi UE menggunakan algoritma keamanan seperti AKA (Authentication and Key Agreement).
 Memastikan bahwa hanya UE yang sah yang dapat mengakses jaringan.
-3. Manajemen Mobilitas
+3. ### Manajemen Mobilitas
 Handover antar eNB dalam LTE dan koordinasi dengan AMF di jaringan 5G saat terjadi interworking antara LTE dan 5G.
 Menangani Paging untuk menemukan UE saat ada panggilan atau data masuk.
-4. Manajemen Sesi dan Koneksi
+4. ### Manajemen Sesi dan Koneksi
 Bekerja sama dengan SGW (Serving Gateway) dan PGW (PDN Gateway) untuk mengelola lalu lintas data pengguna.
 Menangani pembuatan, pemeliharaan, dan penghentian sesi data untuk UE.
-5. Interaksi dengan Komponen Lain di EPC
+5. ### Interaksi dengan Komponen Lain di EPC
 eNB (Evolved NodeB) → Untuk menangani komunikasi radio antara UE dan jaringan.
 HSS (Home Subscriber Server) → Untuk autentikasi pengguna.
 SGW (Serving Gateway) → Untuk menangani lalu lintas data pengguna.
 PGW (PDN Gateway) → Untuk menghubungkan jaringan LTE ke jaringan eksternal seperti internet.
 PCRF (Policy and Charging Rules Function) → Untuk mengelola kebijakan jaringan dan kontrol kualitas layanan.
 Contoh Implementasi open5gs-mmed
-1. Instalasi dan Menjalankan open5gs-mmed
+1. ### Instalasi dan Menjalankan open5gs-mmed
 Untuk menjalankan open5gs-mmed, pertama-tama Open5GS harus diinstal pada server Linux. Berikut adalah langkah-langkahnya:
 
 bash
 Copy
 Edit
-# Install Open5GS
+## Install Open5GS
+```
 sudo apt update
 sudo apt install open5gs -y
-
-# Jalankan layanan MME
+```
+## Jalankan layanan MME
+```
 sudo systemctl start open5gs-mmed
 sudo systemctl enable open5gs-mmed
-
-# Periksa status MME
+```
+## Periksa status MME
 sudo systemctl status open5gs-mmed
 2. Konfigurasi open5gs-mmed
 File konfigurasi utama untuk MME berada di /etc/open5gs/mme.yaml. Contoh bagian dari file ini:
-
+```
 yaml
 Copy
 Edit
@@ -177,6 +187,7 @@ mme:
       mcc: 001
       mnc: 01
     tac: 1
+```
 Penjelasan konfigurasi:
 
 freeDiameter → Digunakan untuk komunikasi dengan HSS menggunakan protokol Diameter.
@@ -193,7 +204,7 @@ Jika autentikasi berhasil, MME mengalokasikan GUTI (Globally Unique Temporary Id
 MME berkomunikasi dengan SGW untuk menetapkan sesi data bagi UE.
 Setelah sesi dibuat, MME mengirim "Attach Accept" ke UE, dan UE berhasil terhubung ke jaringan.
 Berikut adalah contoh log dari MME yang menunjukkan proses ini:
-
+```
 yaml
 Copy
 Edit
@@ -201,8 +212,8 @@ Edit
 05/02 11:30:14.234: [mme] INFO: [UE IMSI: 001010000000001] Authentication successful
 05/02 11:30:14.345: [mme] INFO: [UE IMSI: 001010000000001] Assigned GUTI: 001011000000001
 05/02 11:30:14.456: [mme] INFO: [UE IMSI: 001010000000001] Attach Accept sent
-
-Kesimpulan
+```
+# Kesimpulan
 open5gs-mmed adalah komponen yang menjalankan fungsi MME dalam jaringan inti LTE.
 Fungsi utamanya meliputi registrasi UE, autentikasi, manajemen mobilitas, dan pengelolaan sesi serta koneksi.
 Dapat diimplementasikan dalam server Linux dengan konfigurasi yang fleksibel.
@@ -217,42 +228,45 @@ open5gs-pcrfd adalah komponen dalam Open5GS yang menjalankan fungsi PCRF (Policy
 
 Dalam Open5GS, open5gs-pcrfd adalah daemon (layanan) yang menangani kebijakan Quality of Service (QoS), pembatasan bandwidth, dan aturan tarif bagi pengguna dalam jaringan LTE.
 Fungsi utama open5gs-pcrfd
-1. Manajemen Kebijakan Jaringan (Policy Control)
+1. ### Manajemen Kebijakan Jaringan (Policy Control)
 
     Mengatur kebijakan yang menentukan prioritas jaringan, alokasi bandwidth, dan kontrol layanan data.
     Menerapkan Quality of Service (QoS) untuk memastikan bahwa layanan tertentu (misalnya VoLTE atau video streaming) mendapatkan prioritas jaringan yang sesuai.
 
-2. Kontrol Pengenaan Biaya (Charging Rules Function)
+2. ### Kontrol Pengenaan Biaya (Charging Rules Function)
 
     Menentukan aturan tarif berdasarkan jenis layanan, volume data yang digunakan, atau durasi sesi.
     Dapat diintegrasikan dengan sistem penagihan online (Online Charging System / OCS) untuk menangani pembayaran prabayar.
 
-3. Interaksi dengan Komponen Lain di EPC
+3. ### Interaksi dengan Komponen Lain di EPC
 
     PGW (Packet Gateway) → Untuk menerapkan kebijakan QoS dan tarif bagi lalu lintas data pengguna.
     SGW (Serving Gateway) → Untuk mengontrol rute data berdasarkan kebijakan yang ditentukan.
     OCS (Online Charging System) → Untuk mengelola akun prabayar dan pembayaran layanan data.
 
 Contoh Implementasi open5gs-pcrfd
-1. Instalasi dan Menjalankan open5gs-pcrfd
+1. ### Instalasi dan Menjalankan open5gs-pcrfd
 
 Untuk menjalankan open5gs-pcrfd, Open5GS harus diinstal terlebih dahulu. Berikut adalah langkah-langkahnya:
 
-# Install Open5GS
+## Install Open5GS
+```
 sudo apt update
 sudo apt install open5gs -y
-
-# Jalankan layanan PCRF
+```
+## Jalankan layanan PCRF
+```
 sudo systemctl start open5gs-pcrfd
 sudo systemctl enable open5gs-pcrfd
-
-# Periksa status PCRF
+```
+## Periksa status PCRF
+```
 sudo systemctl status open5gs-pcrfd
-
-2. Konfigurasi open5gs-pcrfd
+```
+2. ### Konfigurasi open5gs-pcrfd
 
 File konfigurasi utama untuk PCRF berada di /etc/open5gs/pcrf.yaml. Berikut adalah contoh konfigurasinya:
-
+```
 pcrf:
   freeDiameter:
     identity: "pcrf.localdomain"
@@ -276,15 +290,15 @@ pcrf:
         gbrDL: 50000000  # 50 Mbps
         mbrUL: 100000000 # 100 Mbps
         mbrDL: 100000000 # 100 Mbps
-
-Penjelasan konfigurasi:
+```
+## Penjelasan konfigurasi:
 
     freeDiameter → Konfigurasi untuk komunikasi dengan PGW menggunakan protokol Diameter.
     apn → Mengatur kebijakan QoS untuk Access Point Name (APN) yang digunakan oleh pengguna.
     qos → Menentukan Guaranteed Bit Rate (GBR) dan Maximum Bit Rate (MBR) untuk uplink dan downlink.
     ue → Menentukan kebijakan spesifik berdasarkan IMSI (International Mobile Subscriber Identity) pengguna.
 
-3. Contoh Skenario Penggunaan open5gs-pcrfd
+3. ### Contoh Skenario Penggunaan open5gs-pcrfd
 Skenario 1: Pemberlakuan QoS untuk Layanan Video Streaming
 
 Seorang pengguna dengan IMSI: 001010000000001 mengakses layanan streaming video. PCRF akan:
@@ -292,12 +306,12 @@ Seorang pengguna dengan IMSI: 001010000000001 mengakses layanan streaming video.
     Menerapkan QoS yang lebih tinggi untuk memastikan video tidak buffering.
     Memberikan prioritas bandwidth dibandingkan dengan lalu lintas web biasa.
 
-Log dari PCRF:
-
+### Log dari PCRF:
+```
 05/02 12:00:12.123: [pcrf] INFO: QoS Policy Applied for IMSI 001010000000001
 05/02 12:00:12.234: [pcrf] INFO: GBR: 50 Mbps / MBR: 100 Mbps assigned for APN "internet"
-
-Skenario 2: Pembatasan Bandwidth untuk Pengguna Prabayar
+```
+### Skenario 2: Pembatasan Bandwidth untuk Pengguna Prabayar
 
 Seorang pengguna prabayar kehabisan kuota internet, PCRF akan:
 
@@ -305,11 +319,11 @@ Seorang pengguna prabayar kehabisan kuota internet, PCRF akan:
     Mengarahkan pengguna ke portal top-up.
 
 Log dari PCRF:
-
+```
 05/02 12:15:45.567: [pcrf] INFO: IMSI 001010000000002 exceeded data limit
 05/02 12:15:45.678: [pcrf] INFO: Throttling applied: 128 Kbps
-
-Kesimpulan
+```
+# Kesimpulan
 
     open5gs-pcrfd adalah komponen PCRF dalam Open5GS yang mengontrol kebijakan jaringan dan aturan tarif.
     Fungsi utama:
@@ -323,7 +337,7 @@ Kesimpulan
 # open5gs-sgwud
 ################################################################################################################
 
-Penjelasan tentang open5gs-sgwud
+## Penjelasan tentang open5gs-sgwud
 
 open5gs-sgwud adalah komponen dalam Open5GS yang berfungsi sebagai Serving Gateway User Plane (SGW-U) dalam arsitektur jaringan inti 4G LTE (EPC - Evolved Packet Core). Komponen ini bertanggung jawab atas pengelolaan dan penerusan lalu lintas data pengguna (User Plane) antara eNodeB (eNB) dan jaringan eksternal.
 
@@ -334,23 +348,23 @@ Pada jaringan LTE yang menerapkan CP-UP Separation (CUPS - Control Plane and Use
 
 Dalam Open5GS, open5gs-sgwud menangani proses forwarding paket data dari eNB ke PGW-U atau sebaliknya.
 Fungsi utama open5gs-sgwud
-1. Forwarding Data User Plane
+1. ### Forwarding Data User Plane
 
     Meneruskan lalu lintas data UE ⇄ eNB ⇄ SGW-U ⇄ PGW-U.
     Menggunakan GTP-U (GPRS Tunneling Protocol - User Plane) untuk pengiriman paket data.
     Beroperasi berdasarkan perintah dari SGW-C.
 
-2. CP-UP Separation (CUPS)
+2. ### CP-UP Separation (CUPS)
 
     SGW-U hanya menangani paket data, sementara semua keputusan kontrol diatur oleh SGW-C.
     Meningkatkan scalability dan fleksibilitas dalam jaringan inti.
 
-3. QoS (Quality of Service) Enforcement
+3. ### QoS (Quality of Service) Enforcement
 
     Menegakkan aturan QoS yang diberikan oleh PCRF.
     Memastikan bandwidth, latensi, dan prioritas lalu lintas pengguna sesuai dengan kebijakan jaringan.
 
-4. Interaksi dengan Komponen Lain
+4. ### Interaksi dengan Komponen Lain
 
     SGW-C (open5gs-sgwcd) → Memberikan instruksi untuk pengelolaan sesi pengguna.
     PGW-U (open5gs-pgwud) → Meneruskan lalu lintas data ke internet atau layanan lain.
@@ -358,25 +372,28 @@ Fungsi utama open5gs-sgwud
     PCRF (open5gs-pcrfd) → Untuk menerapkan kebijakan jaringan.
 
 Contoh Implementasi open5gs-sgwud
-1. Instalasi dan Menjalankan open5gs-sgwud
+1. ### Instalasi dan Menjalankan open5gs-sgwud
 
 Untuk menjalankan open5gs-sgwud, Open5GS harus diinstal terlebih dahulu:
 
-# Install Open5GS
+## Install Open5GS
+```
 sudo apt update
 sudo apt install open5gs -y
-
-# Jalankan layanan SGW-U
+```
+## Jalankan layanan SGW-U
+```
 sudo systemctl start open5gs-sgwud
 sudo systemctl enable open5gs-sgwud
-
-# Periksa status SGW-U
+```
+## Periksa status SGW-U
+```
 sudo systemctl status open5gs-sgwud
-
-2. Konfigurasi open5gs-sgwud
+```
+2. ### **Konfigurasi open5gs-sgwud**
 
 File konfigurasi utama untuk SGW-U berada di /etc/open5gs/sgwu.yaml. Berikut contoh konfigurasinya:
-
+```
 sgwu:
   gtpu:
     addr: 127.0.0.5  # Alamat IP untuk komunikasi GTP-U
@@ -385,14 +402,14 @@ sgwu:
   metrics:
     addr: 127.0.0.5
     port: 9092
-
+```
 Penjelasan konfigurasi:
 
     gtpu → Menentukan alamat GTP-U yang digunakan untuk komunikasi dengan eNB dan PGW-U.
     pfcp → Menentukan alamat PFCP (Packet Forwarding Control Protocol) yang digunakan untuk komunikasi dengan SGW-C.
     metrics → Konfigurasi untuk pemantauan performa SGW-U.
 
-3. Contoh Skenario Penggunaan open5gs-sgwud
+3. ### Contoh Skenario Penggunaan open5gs-sgwud
 Skenario 1: Penerusan Data Pengguna dari UE ke Internet
 
     UE mengirim permintaan data (misalnya browsing website).
@@ -402,11 +419,11 @@ Skenario 1: Penerusan Data Pengguna dari UE ke Internet
     Balasan dari internet melewati jalur yang sama kembali ke UE.
 
 Log dari SGW-U:
-
+```
 05/02 13:00:12.123: [sgwu] INFO: Received GTP-U packet from eNB (TEID: 0x1234)
 05/02 13:00:12.234: [sgwu] INFO: Forwarding packet to PGW-U (TEID: 0x5678)
-
-Skenario 2: Penerapan QoS untuk Aplikasi Video
+```
+Skenario 2: ### Penerapan QoS untuk Aplikasi Video
 
 Seorang pengguna dengan QoS tinggi untuk streaming video mencoba menonton video. SGW-U akan:
 
@@ -414,13 +431,13 @@ Seorang pengguna dengan QoS tinggi untuk streaming video mencoba menonton video.
     Menerapkan aturan bandwidth untuk memastikan kualitas video.
 
 Log dari SGW-U:
-
+```
 05/02 13:15:30.567: [sgwu] INFO: QoS Policy Applied - Priority 5 (Streaming)
 05/02 13:15:30.678: [sgwu] INFO: Bandwidth allocated - 50 Mbps
+```
+# Kesimpulan
 
-Kesimpulan
-
-    open5gs-sgwud adalah komponen SGW-U dalam Open5GS yang menangani pengelolaan lalu lintas data pengguna (User Plane).
+   ### open5gs-sgwud adalah komponen SGW-U dalam Open5GS yang menangani pengelolaan lalu lintas data pengguna (User Plane).
     Fungsi utama:
         Meneruskan paket data antara eNB dan PGW-U menggunakan GTP-U.
         Mendukung arsitektur CUPS untuk pemisahan antara kontrol dan data.
@@ -436,50 +453,52 @@ open5gs-upfd adalah komponen dalam Open5GS yang berfungsi sebagai User Plane Fun
 
 Dalam 5G Standalone (SA), UPF menjadi bagian inti dalam arsitektur Service-Based Architecture (SBA), di mana ia berkomunikasi dengan Session Management Function (SMF) menggunakan PFCP (Packet Forwarding Control Protocol).
 Fungsi Utama open5gs-upfd
-1. Penerusan Paket Data (Packet Forwarding)
+1. ### Penerusan Paket Data (Packet Forwarding)
 
     Meneruskan lalu lintas data pengguna antara gNodeB (gNB) dan jaringan eksternal (internet, MEC, atau cloud).
     Menggunakan GTP-U (GPRS Tunneling Protocol - User Plane) untuk membuat tunnel data antara perangkat pengguna (UE) dan server tujuan.
 
-2. QoS (Quality of Service) Enforcement
+2. ### QoS (Quality of Service) Enforcement
 
     Menegakkan kebijakan QoS berdasarkan Service Data Flow (SDF) yang dikonfigurasi oleh SMF.
     Memastikan bandwidth, latensi, dan prioritas lalu lintas sesuai dengan kebutuhan layanan.
 
-3. Traffic Steering (Pengalihan Lalu Lintas)
+3. ### Traffic Steering (Pengalihan Lalu Lintas)
 
     Mengarahkan lalu lintas ke Multi-access Edge Computing (MEC) untuk layanan latency rendah.
     Menyediakan local breakout, memungkinkan data tertentu langsung diproses di lokasi terdekat, tanpa harus melewati seluruh jaringan inti.
 
-4. Deep Packet Inspection (DPI) dan Filtering
+4. ### Deep Packet Inspection (DPI) dan Filtering
 
     Menganalisis lalu lintas untuk menentukan jenis layanan yang sedang digunakan (misalnya VoIP, streaming video, atau gaming).
     Menyaring lalu lintas berbahaya atau tidak diizinkan.
 
-5. Interworking dengan Jaringan 4G LTE
+5. ### Interworking dengan Jaringan 4G LTE
 
     Jika jaringan masih menggunakan 4G LTE (Non-Standalone, NSA), UPF dapat bekerja bersama SGW-U dan PGW-U untuk menangani lalu lintas pengguna.
 
 Contoh Implementasi open5gs-upfd
-1. Instalasi dan Menjalankan open5gs-upfd
+1. ### Instalasi dan Menjalankan open5gs-upfd
 
 Untuk menjalankan open5gs-upfd, Open5GS harus diinstal terlebih dahulu:
 
 # Install Open5GS
+```
 sudo apt update
 sudo apt install open5gs -y
-
-# Jalankan layanan UPF
+```
+## Jalankan layanan UPF
+```
 sudo systemctl start open5gs-upfd
 sudo systemctl enable open5gs-upfd
-
-# Periksa status UPF
+```
+## Periksa status UPF
 sudo systemctl status open5gs-upfd
 
 2. Konfigurasi open5gs-upfd
 
 File konfigurasi utama untuk UPF berada di /etc/open5gs/upf.yaml. Berikut contoh konfigurasinya:
-
+```
 upf:
   pfcp:
     addr: 127.0.0.7  # Alamat IP untuk komunikasi dengan SMF
@@ -494,7 +513,7 @@ upf:
       gtpu:
         addr: 127.0.0.7
       subnet: 10.45.0.1/16
-
+```
 Penjelasan konfigurasi:
 
     pfcp → Menentukan alamat PFCP untuk komunikasi dengan SMF.
