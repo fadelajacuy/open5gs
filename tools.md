@@ -50,14 +50,13 @@ sudo systemctl start open5gs-amfd
 sudo systemctl enable open5gs-amfd
 ```
 ## Periksa status AMF
+```
 sudo systemctl status open5gs-amfd
-
+```
 2. ### Konfigurasi open5gs-amfd
 File konfigurasi utama untuk AMF berada di /etc/open5gs/amf.yaml. Contoh bagian dari file ini:
 ```
-yaml
-Copy
-Edit
+
 amf:
   sbi:
     - addr: 127.0.0.5
@@ -95,9 +94,7 @@ Setelah semua langkah berhasil, AMF mengirim "Registration Accept" ke UE.
 Berikut adalah contoh log dari AMF yang menunjukkan proses ini:
 
 ```
-yaml
-Copy
-Edit
+  
 05/02 10:00:12.345: [amf] INFO: [UE IMSI: 001010000000001] Registration Request received
 05/02 10:00:12.456: [amf] INFO: [UE IMSI: 001010000000001] Authentication successful
 05/02 10:00:12.567: [amf] INFO: [UE IMSI: 001010000000001] Assigned GUTI: 001011000000001
@@ -141,9 +138,7 @@ Contoh Implementasi open5gs-mmed
 1. ### Instalasi dan Menjalankan open5gs-mmed
 Untuk menjalankan open5gs-mmed, pertama-tama Open5GS harus diinstal pada server Linux. Berikut adalah langkah-langkahnya:
 
-bash
-Copy
-Edit
+ 
 ## Install Open5GS
 ```
 sudo apt update
@@ -156,12 +151,10 @@ sudo systemctl enable open5gs-mmed
 ```
 ## Periksa status MME
 sudo systemctl status open5gs-mmed
-2. Konfigurasi open5gs-mmed
+2. ### Konfigurasi open5gs-mmed
 File konfigurasi utama untuk MME berada di /etc/open5gs/mme.yaml. Contoh bagian dari file ini:
 ```
-yaml
-Copy
-Edit
+
 mme:
   freeDiameter: # Konfigurasi Diameter untuk komunikasi dengan HSS
     identity: "mme.localdomain"
@@ -204,10 +197,8 @@ Jika autentikasi berhasil, MME mengalokasikan GUTI (Globally Unique Temporary Id
 MME berkomunikasi dengan SGW untuk menetapkan sesi data bagi UE.
 Setelah sesi dibuat, MME mengirim "Attach Accept" ke UE, dan UE berhasil terhubung ke jaringan.
 Berikut adalah contoh log dari MME yang menunjukkan proses ini:
+
 ```
-yaml
-Copy
-Edit
 05/02 11:30:14.123: [mme] INFO: [UE IMSI: 001010000000001] Attach Request received
 05/02 11:30:14.234: [mme] INFO: [UE IMSI: 001010000000001] Authentication successful
 05/02 11:30:14.345: [mme] INFO: [UE IMSI: 001010000000001] Assigned GUTI: 001011000000001
@@ -291,22 +282,23 @@ pcrf:
         mbrUL: 100000000 # 100 Mbps
         mbrDL: 100000000 # 100 Mbps
 ```
-## Penjelasan konfigurasi:
 
-    freeDiameter → Konfigurasi untuk komunikasi dengan PGW menggunakan protokol Diameter.
+## Penjelasan konfigurasi:
+    
+     freeDiameter → Konfigurasi untuk komunikasi dengan PGW menggunakan protokol Diameter.
     apn → Mengatur kebijakan QoS untuk Access Point Name (APN) yang digunakan oleh pengguna.
     qos → Menentukan Guaranteed Bit Rate (GBR) dan Maximum Bit Rate (MBR) untuk uplink dan downlink.
     ue → Menentukan kebijakan spesifik berdasarkan IMSI (International Mobile Subscriber Identity) pengguna.
 
-3. ### Contoh Skenario Penggunaan open5gs-pcrfd
-Skenario 1: Pemberlakuan QoS untuk Layanan Video Streaming
+3. ## Contoh Skenario Penggunaan open5gs-pcrfd
+Skenario 1: ###Pemberlakuan QoS untuk Layanan Video Streaming
 
 Seorang pengguna dengan IMSI: 001010000000001 mengakses layanan streaming video. PCRF akan:
 
     Menerapkan QoS yang lebih tinggi untuk memastikan video tidak buffering.
     Memberikan prioritas bandwidth dibandingkan dengan lalu lintas web biasa.
 
-### Log dari PCRF:
+## Log dari PCRF:
 ```
 05/02 12:00:12.123: [pcrf] INFO: QoS Policy Applied for IMSI 001010000000001
 05/02 12:00:12.234: [pcrf] INFO: GBR: 50 Mbps / MBR: 100 Mbps assigned for APN "internet"
@@ -522,7 +514,7 @@ Penjelasan konfigurasi:
     dnn (Data Network Name) → Mengatur APN yang digunakan oleh pengguna, termasuk alamat IP dan subnet.
 
 Contoh Implementasi di Jaringan Nyata
-Skenario 1: Penerusan Data dari UE ke Internet
+Skenario 1: ### Penerusan Data dari UE ke Internet
 Kasus Penggunaan
 
 Seorang pengguna dengan Smartphone 5G membuka YouTube. UPF akan:
@@ -533,10 +525,10 @@ Seorang pengguna dengan Smartphone 5G membuka YouTube. UPF akan:
     Meneruskan data kembali ke gNB untuk dikirim ke UE.
 
 Log dari UPF
-
+```
 02/10 14:00:12.345: [upf] INFO: Received GTP-U packet from gNB (TEID: 0x1234)
 02/10 14:00:12.456: [upf] INFO: Forwarding packet to Internet (DNN: internet)
-
+```
 Skenario 2: Traffic Steering ke MEC (Multi-access Edge Computing)
 Kasus Penggunaan
 
@@ -547,11 +539,11 @@ Seorang gamer menggunakan cloud gaming service, yang memerlukan latency sangat r
     Mengurangi latency dan meningkatkan performa gaming.
 
 Log dari UPF
-
+```
 02/10 14:30:45.678: [upf] INFO: Detected gaming traffic from UE (IMSI: 001010000000001)
 02/10 14:30:45.789: [upf] INFO: Redirecting traffic to MEC (Local Edge Server)
-
-Skenario 3: Interworking dengan Jaringan 4G LTE (NSA Mode)
+```
+Skenario 3: ### Interworking dengan Jaringan 4G LTE (NSA Mode)
 Kasus Penggunaan
 
 Suatu operator memiliki jaringan 5G NSA (Non-Standalone), di mana UE menggunakan jaringan 5G untuk data dan 4G LTE untuk kontrol sinyal. UPF akan:
@@ -560,11 +552,11 @@ Suatu operator memiliki jaringan 5G NSA (Non-Standalone), di mana UE menggunakan
     Mengelola mobilitas pengguna saat berpindah antara jaringan 4G dan 5G.
 
 Log dari UPF
-
+```
 02/10 15:00:30.890: [upf] INFO: Handling interworking with SGW-U (NSA Mode)
 02/10 15:00:31.012: [upf] INFO: UE switched from LTE to 5G, forwarding traffic via UPF
-
-Kesimpulan
+```
+# Kesimpulan
 
     open5gs-upfd adalah komponen UPF dalam Open5GS yang menangani penerusan data pengguna dalam jaringan inti 5G.
     Fungsi utama:
